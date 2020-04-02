@@ -106,7 +106,13 @@ public class ClientMenuState extends WarehouseState {
 	}
 	
 	public void listClientTransactions() {
-		System.out.println("need to add");
+		Iterator orders = warehouse.getOrders();
+		while (orders.hasNext()) {
+			Order nextOrder = (Order) orders.next();
+			if (nextOrder.getId().contentEquals(context.getUser())) {
+				System.out.println(nextOrder);
+			}
+		}
 	}
 	
 	public void editClientCart() {
@@ -118,7 +124,14 @@ public class ClientMenuState extends WarehouseState {
 	}
 	
 	public void displayClientWaitlist() {
-		System.out.println("need to add");
+		Iterator orders = warehouse.getBackorders();
+		while (orders.hasNext()) {
+			Order nextBackOrder = (Order) orders.next();
+			if (nextBackOrder.getId().contentEquals(context.getUser())) {
+				System.out.println(nextBackOrder);
+			}
+		}
+	}
 	}
 
 	public void help() {

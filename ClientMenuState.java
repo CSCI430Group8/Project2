@@ -90,7 +90,15 @@ public class ClientMenuState extends WarehouseState {
 	}
 	
 	public void clientDetails() {
-		System.out.println("need to add");
+		Iterator clients = warehouse.getClients();
+		boolean clientFound = false;
+		while (!clientFound && clients.hasNext()) {
+			Client nextClient = (Client)clients.next();
+			if (nextClient.getId().contentEquals(context.getUser())) {
+				clientFound = true;
+				System.out.println(nextClient);
+			}
+		}
 	}
 	
 	public void listProductsWithSalePrices() {

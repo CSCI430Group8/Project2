@@ -115,7 +115,7 @@ public class ClientMenuState extends WarehouseState {
 
 	public void help() {
 		System.out.println("Enter a number between 0 and 7 as explained below:");
-		System.out.println(EXIT + " to Exit\n");
+		System.out.println(EXIT + " to Exit");
 		System.out.println(CLIENT_DETAILS + " to show client details");
 		System.out.println(LIST_PRODUCTS_WITH_SALE_PRICES + " to show list of products with sale prices");
 		System.out.println(LIST_CLIENT_TRANSACTIONS + " to show client transactions");

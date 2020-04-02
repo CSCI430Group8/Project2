@@ -92,10 +92,13 @@ public class Context {
 	{
 		System.out.println("current state " + currentState + " \n \n ");
 		currentState = nextState[currentState][transition];
-		if (currentState == -2) 
-			System.out.println("Error has occurred"); terminate();
-		if (currentState == -1) 
+		if (currentState == -2) {
+			System.out.println("Error has occurred"); 
 			terminate();
+		}
+		if (currentState == -1) {
+			terminate();
+		}
 		System.out.println("current state " + currentState + " \n \n ");
 		states[currentState].run();
 	}

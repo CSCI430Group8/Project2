@@ -121,7 +121,7 @@ public class ManagerMenuState extends WarehouseState {
 
 	public void help() {
 		System.out.println("Enter a number between 0 and 9 as explained below:");
-		System.out.println(EXIT + " to Exit\n");
+		System.out.println(EXIT + " to Exit");
 		System.out.println(ADD_PRODUCT + " to add a product");
 		System.out.println(ADD_SUPPLIER + " to add a supplier");
 		System.out.println(LIST_SUPPLIERS + " to show list of suppliers");

@@ -92,31 +92,228 @@ public class ManagerMenuState extends WarehouseState {
 	}
 	
 	public void addProduct() {
-		System.out.println("need to add");
-	}
+		//System.out.println("need to add");
+		
+		int input = EXIT + 1;//arbitrary non-exit number
+
+        while(input != EXIT) {
+
+            int quantity = 0;
+            double price = 0;
+
+            String name,
+                    phone,
+                    address,
+                    supplier;
+
+           // System.out.println("\nWhat would you like to add?\n" + 
+					//EXIT + ".) Go Back\n" +
+                   // CLIENT + ".) Add Client\n"+
+                    PRODUCT + ".) Add Product\n"+
+                   // SUPPLIER + ".) Add Supplier\n");
+
+            input = inputScanner.nextInt();
+			
+
+            switch(input){
+                case EXIT:
+                    break;
+               /* case CLIENT:
+                    System.out.print("\nName: ");
+                    name = inputScanner.next();
+                    System.out.print("\nPhone Number: ");
+                    phone = inputScanner.next();
+                    System.out.print("\nAddress: ");
+                    address = inputScanner.next();
+                    Client dummyClient;
+
+                    dummyClient = warehouse.addClient(name, phone, address);
+                    if (dummyClient == null) {
+                        System.out.println("Could not add client, try again.");
+                    }
+                    break;*/
+                case PRODUCT:
+                    System.out.print("\nProduct Name: ");
+                    name = inputScanner.next();
+                    System.out.print("\nSupplier Name: ");
+                    supplier = inputScanner.next();
+                    System.out.print("\nProduct Price: ");
+                    price = Math.round(inputScanner.nextDouble() * 100.0) / 100.0;//rounds to 2 decimals
+                    System.out.print("\nProduct Quantity: ");
+                    quantity = inputScanner.nextInt();
+
+                    Product dummyProduct;//create dummy entry based on inputs
+
+					dummyProduct = warehouse.addProduct(name, supplier, price, quantity);
+					if (dummyProduct == null) {
+					    System.out.println("Could not add product, try again.");
+                    }
+                    break;
+                /*case SUPPLIER:
+                    System.out.print("\nName: ");
+                    name = inputScanner.next();
+                    System.out.print("\nPhone Number: ");
+                    phone = inputScanner.next();
+                    System.out.print("\nAddress: ");
+                    address = inputScanner.next();
+                    Supplier dummySupplier;
+
+                    dummySupplier = warehouse.addSupplier(name, phone, address);
+                    if (dummySupplier == null) {
+                        System.out.println("Could not add supplier, try again.");
+                    }
+
+                    break;
+                default:
+                    System.out.println("Not a valid input.\n");
+                    break;*/
+            }//end switch
+        }//end while
+		
+	} //end method
 	
 	public void addSupplier() {
 		System.out.println("need to add");
+		
+		int input = EXIT + 1;//arbitrary non-exit number
+
+        while(input != EXIT) {
+
+            int quantity = 0;
+            double price = 0;
+
+            String name,
+                    phone,
+                    address,
+                    supplier;
+
+           // System.out.println("\nWhat would you like to add?\n" + 
+					//EXIT + ".) Go Back\n" +
+                   // CLIENT + ".) Add Client\n"+
+                    //PRODUCT + ".) Add Product\n"+
+                    SUPPLIER + ".) Add Supplier\n");
+
+            input = inputScanner.nextInt();
+			
+
+            switch(input){
+                case EXIT:
+                    break;
+               /* case CLIENT:
+                    System.out.print("\nName: ");
+                    name = inputScanner.next();
+                    System.out.print("\nPhone Number: ");
+                    phone = inputScanner.next();
+                    System.out.print("\nAddress: ");
+                    address = inputScanner.next();
+                    Client dummyClient;
+
+                    dummyClient = warehouse.addClient(name, phone, address);
+                    if (dummyClient == null) {
+                        System.out.println("Could not add client, try again.");
+                    }
+                    break;*/
+                /*case PRODUCT:
+                    System.out.print("\nProduct Name: ");
+                    name = inputScanner.next();
+                    System.out.print("\nSupplier Name: ");
+                    supplier = inputScanner.next();
+                    System.out.print("\nProduct Price: ");
+                    price = Math.round(inputScanner.nextDouble() * 100.0) / 100.0;//rounds to 2 decimals
+                    System.out.print("\nProduct Quantity: ");
+                    quantity = inputScanner.nextInt();
+
+                    Product dummyProduct;//create dummy entry based on inputs
+
+					dummyProduct = warehouse.addProduct(name, supplier, price, quantity);
+					if (dummyProduct == null) {
+					    System.out.println("Could not add product, try again.");
+                    }*/
+                    break;
+                case SUPPLIER:
+                    System.out.print("\nName: ");
+                    name = inputScanner.next();
+                    System.out.print("\nPhone Number: ");
+                    phone = inputScanner.next();
+                    System.out.print("\nAddress: ");
+                    address = inputScanner.next();
+                    Supplier dummySupplier;
+
+                    dummySupplier = warehouse.addSupplier(name, phone, address);
+                    if (dummySupplier == null) {
+                        System.out.println("Could not add supplier, try again.");
+                    }
+
+                    break;
+                default:
+                    System.out.println("Not a valid input.\n");
+                    break;*/
+            }//end switch
+        }//end while
+		
 	}
 	
 	public void listSuppliers() {
 		System.out.println("need to add");
+		
+		Iterator allSuppliers = warehouse.getSuppliers();
+		while (allSuppliers.hasNext()){
+			Supplier nextSupplier = (Supplier)(allSuppliers.next());
+            System.out.println(nextSupplier.toString());
+            System.out.println();
+        }//end while
+		
 	}
 	
 	public void listSuppliersOfProductWithPurchasePrices() {
 		System.out.println("need to add");
+		
+		
+		Iterator allSuppliers = warehouse.getSuppliers();
+		while (allSuppliers.hasNext()){
+			Supplier nextSupplier = (Supplier)(allSuppliers.next());
+            System.out.println(nextSupplier.toString());
+            System.out.println();
+		
 	}
 	
 	public void listProductsOfSupplierWithPurchasePrices() {
 		System.out.println("need to add");
-	}
+		
+		Iterator allProducts = warehouse.getProducts();
+		while (allProducts.hasNext()){
+			Product nextProduct = (Product)(allProducts.next());
+            System.out.println(nextProduct.toString());
+            System.out.println();
+        }//end while
+		
+	} //end method
 	
 	public void addSupplierForAProduct() {
 		System.out.println("need to add");
+		
+		System.out.println("Please enter productID:");
+		productID = inputScanner.next();
+		System.out.println("Please enter supplierID:");
+		supplierID = inputScanner.next();
+		System.out.println("Please enter the purchase price:");
+		purchasePrice = inputScanner.next();
+		
+		
+		
+		
 	}
 	
 	public void modifyPurchasePriceOFProductFromSupplier() {
 		System.out.println("need to add");
+		
+		System.out.println("Please enter productID:");
+		productID = inputScanner.next();
+		System.out.println("Please enter supplierID:");
+		supplierID = inputScanner.next();
+		System.out.println("Please enter the purchase price:");
+		purchasePrice = inputScanner.next();
+		
 	}
 
 	public void help() {

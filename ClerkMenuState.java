@@ -1,7 +1,6 @@
 import java.util.*;
 import java.text.*;
 import java.io.*;
-import java.util.Scanner;
 public class ClerkMenuState extends WarehouseState {
 	private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	private static Warehouse warehouse;

@@ -183,7 +183,25 @@ public class ProductList implements Serializable {
 			}//end if
 		}//end for
 		return null;//product is not found, return -1
-	}//end setProductPrice
+	}//end setProductName
+	
+	/*
+     * Function:	getPurchasePrices
+     * Type:		Iterator
+     * Privacy:		public
+     * Description:	This returns an iterator for the Product PurchasePrices that allows
+					for traversal through the different items within the
+					purchase prices of the product.
+     */
+	public Iterator getPurchasePrices(String id){
+		for(int i = 0; i < products.size(); i++){
+			if(products.get(i).getId().contentEquals(id)){
+				return products.get(i).getPurchasePrices();
+			}
+		}
+
+		return null;
+	}//end getPurchasePrices
 
 	/*
 	 * Function:	writeObject

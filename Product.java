@@ -14,6 +14,73 @@ public class Product implements Serializable {
 			backorderQuantity;
     private double price;
     NumberFormat format;
+	private LinkedList<PurchasePrice> PurchasePrices = new LinkedList<PurchasePrice>();
+	
+	class PurchasePrice implements Serializable {
+		private Supplier supplier;
+		private double purchasePrice;
+        
+		/*
+		* Function:    PurchasePrice
+		* Type:        constructor(generic)
+		* Privacy:        public
+		* Description:    PurchasePrice Constructor.
+		*/
+		PurchasePrice(Supplier supplier, double purchasePrice){
+			this.supplier = supplier;
+			this.purchasePrice = purchasePrice;
+		}//end constructor
+        
+		/*
+		* Function:    getSupplier
+		* Type:        Supplier
+		* Privacy:        public
+		* Description:    Gets Supplier of Product.
+		*/
+		public Supplier getSupplier(){
+			return supplier;
+		}//end getSupplier
+
+		/*
+		* Function:    getPurchasePrice
+		* Type:        int
+		* Privacy:        public
+		* Description:    Gets Product Purchase Price.
+		*/
+		public double getPurchasePrice(){
+			return purchasePrice;
+		}//end getPrice
+        
+		/*
+		* Function:    setSupplier
+		* Type:        void
+		* Privacy:        public
+		* Description:    Sets Supplier of Product.
+		*/
+		public void setSupplier(Supplier supplier){
+			this.supplier = supplier;
+		}//end setSupplier
+
+		/*
+		* Function:    setPurchasePrice
+		* Type:        void
+		* Privacy:        public
+		* Description:    Sets Product Purchase Price.
+		*/
+		public void setPurchasePrice(double purchasePrice){
+			this.purchasePrice = purchasePrice;
+		}//end setId
+        
+		/*
+		* Function:    toString
+		* Type:        String
+		* Privacy:        public
+		* Description:    Converts PurchasePrice to string output.
+		*/
+		public String toString(){
+			return "Name: " + supplier.getName() + " Price: " + purchasePrice;
+		}//end display
+	}
 	
 	/*
      * Function:	Product
@@ -140,6 +207,67 @@ public class Product implements Serializable {
 	public void setSupplier(String supplier){
 		this.supplier = supplier;
 	}//end setPrice
+	
+	/*
+     * Function:	setPurchasePrice
+     * Type:		boolean
+     * Privacy:		public
+     * Description:	Sets new price for a purchase price with a supplier.
+	 */
+	public boolean setPurchasePrice(String supplierId, double purchasePrice) {
+		boolean entryFound = false;
+		Iterator allPurchasePrices = getPurchasePrices();
+		while (allPurchasePrices.hasNext() & !entryFound){
+			PurchasePrice nextPurchasePrice = (PurchasePrice)(allPurchasePrices.next());
+			if(nextPurchasePrice.getSupplier().getId().contentEquals(supplierId)) { 
+				entryFound = true;
+				nextPurchasePrice.setPurchasePrice(purchasePrice);
+			}
+		}
+		return entryFound;
+	}//end setPurchasePrice
+	
+	/*
+     * Function:	removePurchasePrice
+     * Type:		boolean
+     * Privacy:		public
+     * Description:	Removes ShoppingCartItem from ShoppingCart.
+	 */
+	public boolean removePurchasePrice(String supplierId) {
+		boolean entryFound = false;
+		Iterator allPurchasePrices = getPurchasePrices();
+		while (allPurchasePrices.hasNext() & !entryFound){
+			PurchasePrice nextPurchasePrice = (PurchasePrice)(allPurchasePrices.next());
+			if(nextPurchasePrice.getSupplier().getId().contentEquals(supplierId)) { 
+				entryFound = true;
+				allPurchasePrices.remove();
+			}
+		}
+		return entryFound;
+	}//end removePurchasePrice
+	
+	/*
+     * Function:	insertPurchasePrice
+     * Type:		boolean
+     * Privacy:		public
+     * Description:	Inserts Supplier and purchase price.
+	 */
+	public boolean insertPurchasePrice(Supplier supplier, double purchasePrice) {
+		boolean result;
+		PurchasePrice newPurchasePrice = new PurchasePrice(supplier, purchasePrice);
+		result = PurchasePrices.add(newPurchasePrice);
+		return result;
+	}//end insertPurchasePrice
+	
+	/*
+     * Function:	getPurchasePrices
+     * Type:		Iterator
+     * Privacy:		public
+     * Description:	Returns an iterator for ShoppingCart
+	 */
+	public Iterator getPurchasePrices(){
+		return PurchasePrices.iterator();
+	}//end getPurchasePrices
 
     /*
      * Function:	toString

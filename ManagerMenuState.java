@@ -113,7 +113,7 @@ public class ManagerMenuState extends WarehouseState {
 
         name = getToken("\nProduct Name: ");
         supplier = getToken("\nSupplier Name: ");
-        price = Math.round(getPrice("\nProduct Price: ") * 100.0) / 100.0;//rounds to 2 decimals
+        price = Math.round(getPrice("\nProduct Sales Price: ") * 100.0) / 100.0;//rounds to 2 decimals
         quantity = getNumber("\nProduct Quantity: ");
 
         Product dummyProduct;//create dummy entry based on inputs
@@ -151,47 +151,121 @@ public class ManagerMenuState extends WarehouseState {
 	}
 	
 	public void listSuppliersOfProductWithPurchasePrices() {
-		Iterator allSuppliers = warehouse.getSuppliers();
-		while (allSuppliers.hasNext()){
-			Supplier nextSupplier = (Supplier)(allSuppliers.next());
-            System.out.println(nextSupplier.toString());
-            System.out.println();
+		boolean entryFound = false;
+		String productId;
+		
+		productId = getToken("\nEnter the ID of the product: ");
+		
+		Iterator allProducts = warehouse.getProducts();
+		while (allProducts.hasNext() & !entryFound){
+			Product nextProduct = (Product)(allProducts.next());
+			if(nextProduct.getId() == productId) {
+				Iterator allPurchasePrices = nextProduct.getPurchasePrices();
+				while (allPurchasePrices.hasNext()) {
+					Product.PurchasePrice nextPurchasePrice = (Product.PurchasePrice)(allPurchasePrices.next());
+					System.out.println(nextPurchasePrice.toString());
+				}
+				entryFound = true;
+			}
 		}//end while
 	}
 	
 	public void listProductsOfSupplierWithPurchasePrices() {
+		boolean entryFound = false;
+		String supplierId;
+		
+		supplierId = getToken("\nEnter the ID of the supplier: ");
+		
 		Iterator allProducts = warehouse.getProducts();
 		while (allProducts.hasNext()){
 			Product nextProduct = (Product)(allProducts.next());
-            System.out.println(nextProduct.toString());
-            System.out.println();
-        }//end while
+			Iterator allPurchasePrices = nextProduct.getPurchasePrices();
+			while (allPurchasePrices.hasNext()) {
+				Product.PurchasePrice nextPurchasePrice = (Product.PurchasePrice)(allPurchasePrices.next());
+				if(nextPurchasePrice.getSupplier().getId() == supplierId){
+					System.out.println("Product Name: " + nextProduct.getName() + " Product Purchase Price: " + nextPurchasePrice.getPurchasePrice());
+				}
+			}
+		}//end while
 		
 	} //end method
 	
 	public void addSupplierForAProduct() {
 		String productId,
-			   supplierId,
-			   purchasePrice;
+				supplierId;
 		
-		productId = getToken("\nPlease enter the ID of the product: ");
-		supplierId = getToken("\nPlease enter the ID of the supplier: ");
-		purchasePrice = getToken("\nPlease enter the purchase price: ");
+		double purchasePrice;
+				
+		boolean productFound = false,
+				supplierFound = false,
+				result = false;
 		
-		
-		
-		
+		productId = getToken("\nInput the ID of the product: ");
+        Iterator allProducts = warehouse.getProducts();
+        Product nextProduct;
+        while(!productFound & allProducts.hasNext()){
+            nextProduct = (Product)allProducts.next();
+            if(nextProduct.getId().contentEquals(productId)) {
+                productFound = true;
+				supplierId = getToken("\nInput the ID of the supplier: ");
+
+				Iterator allSuppliers = warehouse.getSuppliers();
+				Supplier nextSupplier;
+				while(!supplierFound & allSuppliers.hasNext()){
+					nextSupplier = (Supplier)allSuppliers.next();
+					if(nextSupplier.getId().contentEquals(supplierId)) {
+						supplierFound = true;
+						purchasePrice = Math.round(getPrice("\nInput the purchase price of the product for the supplier: ") * 100.0) / 100.0;;
+						result = warehouse.addPurchasePrice(nextProduct, nextSupplier, purchasePrice);
+						if(result) {
+							System.out.println("\nPurchase price successfully added.");
+						}
+						else {
+							System.out.println("\nFailed to add purchase price, try again.");
+						}
+					}
+				}
+            }
+        }
 	}
 	
-	public void modifyPurchasePriceOFProductFromSupplier() {
+	public void modifyPurchasePriceOfProductFromSupplier() {
 		String productId,
-			   supplierId,
-			   purchasePrice;
+				supplierId;
 		
-		productId = getToken("\nPlease enter the ID of the product: ");
-		supplierId = getToken("\nPlease enter the ID of the supplier: ");
-		purchasePrice = getToken("\nPlease enter the purchase price: ");
+		double purchasePrice;
+				
+		boolean productFound = false,
+				supplierFound = false,
+				result = false;
 		
+		productId = getToken("\nInput the ID of the product: ");
+        Iterator allProducts = warehouse.getProducts();
+        Product nextProduct;
+        while(!productFound & allProducts.hasNext()){
+            nextProduct = (Product)allProducts.next();
+            if(nextProduct.getId().contentEquals(productId)) {
+                productFound = true;
+				supplierId = getToken("\nInput the ID of the supplier: ");
+
+				Iterator allSuppliers = warehouse.getSuppliers();
+				Supplier nextSupplier;
+				while(!supplierFound & allSuppliers.hasNext()){
+					nextSupplier = (Supplier)allSuppliers.next();
+					if(nextSupplier.getId().contentEquals(supplierId)) {
+						supplierFound = true;
+						purchasePrice = Math.round(getPrice("\nInput the purchase price of the product for the supplier: ") * 100.0) / 100.0;;
+						result = warehouse.setPurchasePrice(productId, supplierId, purchasePrice);
+						if(result) {
+							System.out.println("\nPurchase price successfully modified.");
+						}
+						else {
+							System.out.println("\nFailed to modify purchase price, try again.");
+						}
+					}
+				}
+            }
+        }
 	}
 
 	public void help() {
@@ -236,7 +310,7 @@ public class ManagerMenuState extends WarehouseState {
 																			break;
 				case ADD_SUPPLIER_FOR_A_PRODUCT:          					addSupplierForAProduct();
 																			break;
-				case MODIFY_PURCHASE_PRICE_OF_PRODUCT_FROM_SUPPLIER:        modifyPurchasePriceOFProductFromSupplier();
+				case MODIFY_PURCHASE_PRICE_OF_PRODUCT_FROM_SUPPLIER:        modifyPurchasePriceOfProductFromSupplier();
 																			break;
 				case CLERKMENU:          									clerkmenu();
 																			break;

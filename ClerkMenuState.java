@@ -262,7 +262,7 @@ public class ClerkMenuState extends WarehouseState {
 
 	public void help() {
 		System.out.println("Enter a number between 0 and 9 as explained below:");
-		System.out.println(EXIT + " to Exit\n");
+		System.out.println(EXIT + " to Exit");
 		System.out.println(ADD_CLIENT + " to add a client");
 		System.out.println(LIST_PRODUCTS_WITH_QUANTITIES_AND_PRICES + " to show list of products with quantities and sale prices");
 		System.out.println(LIST_CLIENTS + " to show list of clients");

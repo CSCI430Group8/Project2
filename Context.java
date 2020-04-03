@@ -83,19 +83,21 @@ public class Context {
 		nextState[0][0] = -2;nextState[0][1] = 1; nextState[0][2] = -2;nextState[0][3] = 3;
 		nextState[1][0] = 0; nextState[1][1] = -2;nextState[1][2] = 2; nextState[1][3] = 3;
 		nextState[2][0] = -2;nextState[2][1] = 1; nextState[2][2] = -2;nextState[2][3] = 3;
-		nextState[3][0] = 0; nextState[3][1] = 1; nextState[3][2] = 22;nextState[3][3] = -1;
+		nextState[3][0] = 0; nextState[3][1] = 1; nextState[3][2] = 2;nextState[3][3] = -1;
 		currentState = 3;
-		System.out.println("Here");
 	}
 
 	public void changeState(int transition)
 	{
 		System.out.println("current state " + currentState + " \n \n ");
 		currentState = nextState[currentState][transition];
-		if (currentState == -2) 
-			System.out.println("Error has occurred"); terminate();
-		if (currentState == -1) 
+		if (currentState == -2) {
+			System.out.println("Error has occurred"); 
 			terminate();
+		}
+		if (currentState == -1) {
+			terminate();
+		}
 		System.out.println("current state " + currentState + " \n \n ");
 		states[currentState].run();
 	}

@@ -90,32 +90,159 @@ public class ClientMenuState extends WarehouseState {
 	}
 	
 	public void clientDetails() {
-		System.out.println("need to add");
+		Iterator clients = warehouse.getClients();
+		boolean clientFound = false;
+		while (!clientFound && clients.hasNext()) {
+			Client nextClient = (Client)clients.next();
+			if (nextClient.getId().contentEquals(context.instance().getUser())) {
+				clientFound = true;
+				System.out.println(nextClient);
+			}
+		}
 	}
 	
 	public void listProductsWithSalePrices() {
-		System.out.println("need to add");
+		Iterator allProducts = warehouse.getProducts();
+		while (allProducts.hasNext()){
+			Product nextProduct = (Product)(allProducts.next());
+            System.out.println(nextProduct.toString());
+            System.out.println();
+        }//end while
 	}
 	
 	public void listClientTransactions() {
-		System.out.println("need to add");
+		Iterator orders = warehouse.getOrders();
+		while (orders.hasNext()) {
+			Order nextOrder = (Order) orders.next();
+			if (nextOrder.getId().contentEquals(context.instance().getUser())) {
+				System.out.println(nextOrder);
+			}
+		}
 	}
 	
 	public void editClientCart() {
-		System.out.println("need to add");
+		
+		boolean entryFound = false,
+				result = false;
+		String quantity,
+		input = String.valueOf(EXIT - 1);
+		
+		LinkedList<String> removalItems = new LinkedList<String>();
+		
+        Iterator allClients = warehouse.getClients();
+        Client nextClient;
+        while(!entryFound & allClients.hasNext() & Integer.parseInt(input) != EXIT){
+            nextClient = (Client)allClients.next();
+            if(nextClient.getId().contentEquals(context.instance().getUser())) {
+                entryFound = true;
+				Iterator allCartItems = warehouse.getCartItems(nextClient.getId());
+				while (allCartItems.hasNext() & Integer.parseInt(input) != EXIT){
+					Product nextCartItem = (Product)(allCartItems.next());
+					System.out.println("Product Name: " + nextCartItem.getName() + " Product Quantity: " + nextCartItem.getQuantity());
+					
+					input = getToken("\nWhat would you like to do to this item?\n" + 
+							EXIT + ".) Exit\n" +
+							"1" + ".) Change Quantity of Item\n" +
+							"2" + ".) Remove Item From Shopping Cart\n"+
+							"3" + ".) Do Nothing To The Item\n");
+					
+					//input = inputScanner.nextInt();
+					
+					switch(Integer.parseInt(input)){
+						case EXIT:
+							break;
+						case 1:
+							quantity = getToken("\nEnter New Item Quantity: ");
+							//quantity = inputScanner.nextInt();
+							result = warehouse.setCartItemQuant(context.instance().getUser(), nextCartItem.getId(), Integer.parseInt(quantity));
+							if(result) {
+								System.out.println("\nQuantity successfully changed in cart");
+							}
+							else {
+								System.out.println("\nFailed to change quantity, try again");
+							}
+							break;
+						case 2:
+							removalItems.add(nextCartItem.getId());
+							break;
+						case 3:
+							break;
+						default:
+							System.out.println("Not a valid input.\n");
+							break;
+					}//end switch
+				}
+            }
+        }
+		
+		/* Remove Items from Cart*/
+		Iterator itemsToRemove = removalItems.iterator();
+		while (itemsToRemove.hasNext()){
+			String nextItemToRemove = (String)(itemsToRemove.next());
+			result = warehouse.removeCartItem(context.instance().getUser(), nextItemToRemove);
+			if(result) {
+				System.out.println("\nItem successfully removed from cart");
+			}
+			else {
+				System.out.println("\nFailed toremove item, try again");
+			}
+		}
+		
+		System.out.print("\nAll items edited.");
 	}
 	
 	public void addToClientCart() {
-		System.out.println("need to add");
+		String clientId,
+				productId,
+				quantity;
+				
+		boolean clientFound = false,
+				productFound = false,
+				result = false;
+		
+        Iterator allClients = warehouse.getClients();
+        Client nextClient;
+        while(!clientFound & allClients.hasNext()){
+            nextClient = (Client)allClients.next();
+            if(nextClient.getId().contentEquals(context.instance().getUser())) {
+                clientFound = true;
+				productId = getToken("\nInput the ID of the product to add to cart: ");
+				//productId = inputScanner.next();
+		
+				Iterator allProducts = warehouse.getProducts();
+				Product nextProduct;
+				while(!productFound & allProducts.hasNext()){
+					nextProduct = (Product)allProducts.next();
+					if(nextProduct.getId().contentEquals(productId)) {
+						productFound = true;
+						quantity = getToken("\nInput the quantity of the product to add to cart: ");
+						//quantity = inputScanner.nextInt();
+						result = warehouse.addToClientCart(nextClient, nextProduct, Integer.parseInt(quantity));
+						if(result) {
+							System.out.println("\nItem successfully added to cart");
+						}
+						else {
+							System.out.println("\nFailed to add item to cart, try again");
+						}
+					}
+				}
+            }
+        }
 	}
 	
 	public void displayClientWaitlist() {
-		System.out.println("need to add");
+		Iterator orders = warehouse.getBackorders();
+		while (orders.hasNext()) {
+			Order nextBackOrder = (Order) orders.next();
+			if (nextBackOrder.getId().contentEquals(context.instance().getUser())) {
+				System.out.println(nextBackOrder);
+			}
+		}
 	}
 
 	public void help() {
 		System.out.println("Enter a number between 0 and 7 as explained below:");
-		System.out.println(EXIT + " to Exit\n");
+		System.out.println(EXIT + " to Exit");
 		System.out.println(CLIENT_DETAILS + " to show client details");
 		System.out.println(LIST_PRODUCTS_WITH_SALE_PRICES + " to show list of products with sale prices");
 		System.out.println(LIST_CLIENT_TRANSACTIONS + " to show client transactions");
@@ -161,6 +288,7 @@ public class ClientMenuState extends WarehouseState {
 														break;
 			}
 		}
+		//context.setUser(null);
 		logout();
 	}
 	

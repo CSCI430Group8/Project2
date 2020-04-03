@@ -41,6 +41,9 @@ public class Warehouse implements Serializable {
      */
     public static Warehouse instance(){
         if (warehouse == null){
+			ClientIdServer.instance();
+			ProductIdServer.instance();
+			SupplierIdServer.instance();
             warehouse = new Warehouse();
         }
         return warehouse;

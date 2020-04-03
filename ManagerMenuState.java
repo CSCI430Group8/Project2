@@ -64,6 +64,19 @@ public class ManagerMenuState extends WarehouseState {
 		} while (true);
 	}
 	
+	public double getPrice(String prompt) {
+		do {
+			try {
+				String item = getToken(prompt);
+				Double num = Double.valueOf(item);
+				System.out.println(num);
+				return num;
+			} catch (NumberFormatException nfe) {
+				System.out.println("Please input a number ");
+			}
+		} while (true);
+	}
+	
 	public Calendar getDate(String prompt) {
 		do {
 			try {
@@ -92,36 +105,98 @@ public class ManagerMenuState extends WarehouseState {
 	}
 	
 	public void addProduct() {
-		System.out.println("need to add");
-	}
+        int quantity = 0;
+        double price = 0;
+
+        String name,
+               supplier;
+
+        name = getToken("\nProduct Name: ");
+        supplier = getToken("\nSupplier Name: ");
+        price = Math.round(getPrice("\nProduct Price: ") * 100.0) / 100.0;//rounds to 2 decimals
+        quantity = getNumber("\nProduct Quantity: ");
+
+        Product dummyProduct;//create dummy entry based on inputs
+
+		dummyProduct = warehouse.addProduct(name, supplier, price, quantity);
+		if (dummyProduct == null) {
+			System.out.println("Could not add product, try again.");
+        }
+	} //end method
 	
 	public void addSupplier() {
-		System.out.println("need to add");
+        String name,
+               phone,
+               address;
+
+        name = getToken("\nName: ");
+        phone = getToken("\nPhone Number: ");
+        address = getToken("\nAddress: ");
+        Supplier dummySupplier;
+
+        dummySupplier = warehouse.addSupplier(name, phone, address);
+        if (dummySupplier == null) {
+            System.out.println("Could not add supplier, try again.");
+        }		
 	}
 	
 	public void listSuppliers() {
-		System.out.println("need to add");
+		Iterator allSuppliers = warehouse.getSuppliers();
+		while (allSuppliers.hasNext()){
+			Supplier nextSupplier = (Supplier)(allSuppliers.next());
+            System.out.println(nextSupplier.toString());
+            System.out.println();
+        }//end while
+		
 	}
 	
 	public void listSuppliersOfProductWithPurchasePrices() {
-		System.out.println("need to add");
+		Iterator allSuppliers = warehouse.getSuppliers();
+		while (allSuppliers.hasNext()){
+			Supplier nextSupplier = (Supplier)(allSuppliers.next());
+            System.out.println(nextSupplier.toString());
+            System.out.println();
+		}//end while
 	}
 	
 	public void listProductsOfSupplierWithPurchasePrices() {
-		System.out.println("need to add");
-	}
+		Iterator allProducts = warehouse.getProducts();
+		while (allProducts.hasNext()){
+			Product nextProduct = (Product)(allProducts.next());
+            System.out.println(nextProduct.toString());
+            System.out.println();
+        }//end while
+		
+	} //end method
 	
 	public void addSupplierForAProduct() {
-		System.out.println("need to add");
+		String productId,
+			   supplierId,
+			   purchasePrice;
+		
+		productId = getToken("\nPlease enter the ID of the product: ");
+		supplierId = getToken("\nPlease enter the ID of the supplier: ");
+		purchasePrice = getToken("\nPlease enter the purchase price: ");
+		
+		
+		
+		
 	}
 	
 	public void modifyPurchasePriceOFProductFromSupplier() {
-		System.out.println("need to add");
+		String productId,
+			   supplierId,
+			   purchasePrice;
+		
+		productId = getToken("\nPlease enter the ID of the product: ");
+		supplierId = getToken("\nPlease enter the ID of the supplier: ");
+		purchasePrice = getToken("\nPlease enter the purchase price: ");
+		
 	}
 
 	public void help() {
 		System.out.println("Enter a number between 0 and 9 as explained below:");
-		System.out.println(EXIT + " to Exit\n");
+		System.out.println(EXIT + " to Exit");
 		System.out.println(ADD_PRODUCT + " to add a product");
 		System.out.println(ADD_SUPPLIER + " to add a supplier");
 		System.out.println(LIST_SUPPLIERS + " to show list of suppliers");

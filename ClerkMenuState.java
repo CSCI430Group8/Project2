@@ -1,6 +1,7 @@
 import java.util.*;
 import java.text.*;
 import java.io.*;
+import java.util.Scanner;
 public class ClerkMenuState extends WarehouseState {
 	private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	private static Warehouse warehouse;
@@ -77,6 +78,19 @@ public class ClerkMenuState extends WarehouseState {
 			}
 		} while (true);
 	}
+
+	public double getAmount(String prompt) {
+		do {
+			try {
+				String item = getToken(prompt);
+				Double num = Double.valueOf(item);
+				System.out.println(num);
+				return num;
+			} catch (NumberFormatException nfe) {
+				System.out.println("Please enter the deposit");
+			}
+		} while (true);
+	}
 	
 	public int getCommand() {
 		do {
@@ -92,7 +106,15 @@ public class ClerkMenuState extends WarehouseState {
 	}
 	
 	public void addClient() {
-		System.out.println("need to add");
+ 		String name = getToken("Enter member name");
+  		String address = getToken("Enter address");
+  		String phone = getToken("Enter phone");
+		Client dummyClient;
+
+		dummyClient = warehouse.addClient(name, phone, address);
+		if (dummyClient == null) {
+			System.out.println("Could not add client, try again.");
+		}
 	}
 	
 	public void listProductsWithQuantitesAndPrices() {
@@ -100,23 +122,142 @@ public class ClerkMenuState extends WarehouseState {
 	}
 	
 	public void listClients() {
-		System.out.println("need to add");
+		Iterator allClients = warehouse.getClients();
+		while (allClients.hasNext()){
+		Client nextClient = (Client)(allClients.next());
+        System.out.println(nextClient.toString());
+        System.out.println();
+        }
 	}
 	
 	public void listClientsWithOutstandingBalance() {
-		System.out.println("need to add");
+		Iterator allClients = warehouse.getClients();
+		while (allClients.hasNext()){//search for item by id
+			Client nextClient = (Client)(allClients.next());
+        	if(nextClient.getBalance() < 0)
+        		System.out.println("\nID: " + nextClient.getId()
+        							+"\nName: " + nextClient.getName()
+        							+"\nBalance: $" + nextClient.getBalance());
+        	
+        }
 	}
 	
+
+
 	public void displayWaitlistForProduct() {
-		System.out.println("need to add");
+		Iterator allBackorders = warehouse.getBackorders();
+        while (allBackorders.hasNext()) {
+        	Order nextBackorder = (Order)(allBackorders.next());
+			System.out.println(nextBackorder.toString());
+		}
 	}
 	
 	public void receiveShipment() {
-		System.out.println("need to add");
+		System.out.println("Method in progress.");
+        Boolean verification = true;
+        int productQuantity;
+        Iterator currentStock = warehouse.getProducts(),
+        		currentBackorder = warehouse.getBackorders(),
+        		nextOrder;
+        Product nextProduct;
+        ShoppingCartItem nextBackorderProduct;
+        Order nextBackorder;
+        
+        /*Catalog all items from shipment, add to stock*/
+        while(verification) {//while there are still products in shipment
+			String productId = getToken("Input product ID: ");
+			productQuantity = getNumber("Input product quantity: ");
+
+        	
+        	
+        	/*Add shipment's inventory to stock*/
+        	while(currentStock.hasNext()) {
+        		nextProduct = (Product)currentStock.next();
+        		if(nextProduct.getId().contentEquals(productId)) {
+        			warehouse.addProductQuantity(productId, productQuantity);
+        		}//end if
+        	}//end while
+        	
+        	if(getToken("Would you like to add another product from the shipment? (y/n)") != "y") {
+                verification = false;
+            }//end if
+        	
+        }//end while
+        
+        /*Try to fill backorders from newly updated stock*/
+        while(currentBackorder.hasNext()) {
+        	nextBackorder = (Order)currentBackorder.next();//get next backorder
+        	nextOrder = nextBackorder.getProducts();
+        	System.out.println("Should this backorder be filled? (y/n)");
+        	System.out.println(nextBackorder);
+        	/*If current backorder is to be filled*/
+        	if(getToken("Should this backorder be filled? (y/n)") == "y") {//current backorder should be filled
+        		while(nextOrder.hasNext()) {//iterate through current backorder
+        			nextBackorderProduct = (ShoppingCartItem)nextOrder.next();
+        			String backorderId = nextBackorderProduct.getItem().getId();
+        			int backorderQuantity = nextBackorderProduct.getQuantity();
+        			if(backorderQuantity > warehouse.getProductQuantity(backorderId)) {//backOrder quantity > inventory
+        				int remainder = nextBackorderProduct.getQuantity() - warehouse.getProductQuantity(backorderId);
+        				warehouse.addProductBackorderQuantity(backorderId, -(backorderQuantity - remainder));
+        				warehouse.setProductQuantity(backorderId, 0);//stock removed from inventory
+        				nextBackorderProduct.setQuantity(remainder);
+        			} else {//backOrder quantity <= inventory stock
+        				warehouse.addProductQuantity(backorderId, -backorderQuantity);//subtract inventory by backorder quantity
+        				warehouse.addProductBackorderQuantity(backorderId, -backorderQuantity);
+        				nextOrder.remove();
+        			}//end if
+        			
+        		}//end while
+        	}//end if
+        	
+        	/*if backorder has been completely fulfilled delete from list*/
+        	nextOrder = nextBackorder.getProducts();
+        	if(!nextOrder.hasNext()){//remove backorders with no product contents
+        	 currentBackorder.remove();
+        	}//end if
+        	
+        }
 	}
 	
 	public void recordClientPayment() {
-		System.out.println("need to add");
+    	String id = getToken("\nInput Client ID: ");
+    	boolean entryFound = false,
+				result = false,
+    			inputVerification = false;
+		String input;
+		double inputCredit = 0.0;
+		double clientBalance = 0.0;
+
+		while (!inputVerification) {
+			inputCredit = Math.round(getAmount("\nInput Amount to Deposit: ") * 100.0) / 100.0;
+            input = getToken("\nDid you want to deposit $" + inputCredit + " into account with client ID: " + id + " (Y/N)");
+            
+
+            
+			if (input == ("y") || input == ("Y"))// we have broken the verification cycle
+                inputVerification = true;
+
+        }//end while
+
+        /*find client's current balance*/
+        Iterator allClients = warehouse.getClients();
+        Client nextClient;
+        while(!entryFound & allClients.hasNext()){
+            nextClient = (Client)allClients.next();
+            if(nextClient.getId().contentEquals(id)) {
+                entryFound = true;
+                clientBalance = nextClient.getBalance();
+            }
+        }
+
+
+        if(entryFound){
+            if(warehouse.setClientBalance(id, clientBalance + inputCredit))
+                System.out.println("Balance has been added to account ID: " + id);
+        } else {
+            System.out.println("ID " + id + " not found. Balance has not been deposited.");
+        }
+
 	}
 
 	public void help() {

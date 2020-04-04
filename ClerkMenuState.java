@@ -185,7 +185,7 @@ public class ClerkMenuState extends WarehouseState {
 		Iterator allProducts = warehouse.getProducts();
 		while (allProducts.hasNext()){
 			Product nextProduct = (Product)(allProducts.next());
-            System.out.println("Product Name: " + nextProduct.getName() + " Price Per Item: $" + nextProduct.getPrice() + " Quantity: " + nextProduct.getQuantity());
+            System.out.println("Product ID: " + nextProduct.getId() + "Product Name: " + nextProduct.getName() + " Price Per Item: $" + nextProduct.getPrice() + " Quantity: " + nextProduct.getQuantity());
             System.out.println();
 		}
 	}

@@ -172,7 +172,7 @@ public class Context {
 				System.out.println(" There has been an error in saving \n" );
 			}
 		}
-		System.out.println(" Process complete. \n "); System.exit(0);
+		System.out.println(" System finished. \n "); System.exit(0);
 	}
 
 	/*

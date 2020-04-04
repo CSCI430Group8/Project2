@@ -190,8 +190,8 @@ public class Warehouse implements Serializable {
      * Description:	This adds a Product to the ProductList, and then it returns 
 					if the Product that was added.
      */
-	public Product addProduct(String name, String supplier, double price, int quantity) {
-		Product product = new Product(name, supplier, price, quantity);
+	public Product addProduct(String name, double price, int quantity) {
+		Product product = new Product(name, price, quantity);
 		if (inventory.insertProduct(product)) {
 			return (product);
 		}

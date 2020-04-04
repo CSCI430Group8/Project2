@@ -8,8 +8,7 @@ public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final String PRODUCT_STRING = "P";
     private String id,
-            name,
-			supplier;
+            name;
     private int quantity,
 			backorderQuantity;
     private double price;
@@ -88,13 +87,12 @@ public class Product implements Serializable {
      * Privacy:		public
      * Description:	Product Constructor.
 	 */
-	Product(String name, String supplier, double price, int quantity){
+	Product(String name, double price, int quantity){
         id = PRODUCT_STRING + (ProductIdServer.instance()).getId();
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.backorderQuantity = 0;
-        this.supplier = supplier;
         this.format = new DecimalFormat("#0.00");
     }//end constructor
 	
@@ -197,16 +195,6 @@ public class Product implements Serializable {
 	public void setPrice(double price){
 		this.price = price;
 	}//end setPrice
-
-	/*
-	 * Function:	setSupplier
-	 * Type:		void
-	 * Privacy:		public
-	 * Description:	Sets Product Supplier.
-	 */
-	public void setSupplier(String supplier){
-		this.supplier = supplier;
-	}//end setPrice
 	
 	/*
      * Function:	setPurchasePrice
@@ -276,6 +264,6 @@ public class Product implements Serializable {
      * Description:	Converts Product to string output.
 	 */
     public String toString(){
-        return "ID: " + id + " Name: " + name + " Supplier: " + supplier + " Price Per Item: $" + price + " Quantity: " + quantity + " Backordered Quantity: " + backorderQuantity;
+        return "ID: " + id + " Name: " + name + " Price Per Item: $" + price + " Quantity: " + quantity + " Backordered Quantity: " + backorderQuantity;
     }//end toString
 }

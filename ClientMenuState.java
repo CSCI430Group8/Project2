@@ -12,9 +12,10 @@ public class ClientMenuState extends WarehouseState {
 	private static final int LIST_CLIENT_TRANSACTIONS = 3;
 	private static final int EDIT_CLIENT_CART = 4;
 	private static final int ADD_TO_CLIENT_CART = 5;
-	private static final int DISPLAY_CLIENT_WAITLIST = 6;
-	private static final int PROCESS_CLIENT_ORDER = 7;
-	private static final int HELP = 8;
+	private static final int DISPLAY_CLIENT_CART = 6;
+	private static final int DISPLAY_CLIENT_WAITLIST = 7;
+	private static final int PROCESS_CLIENT_ORDER = 8;
+	private static final int HELP = 9;
 	
 	/*
      * Function:	ClientMenuState
@@ -305,6 +306,34 @@ public class ClientMenuState extends WarehouseState {
 	}
 	
 	/*
+     * Function:	displayClientCart
+     * Type:		void
+     * Privacy:		public
+     * Description:	Displays the products and assicated quantities in client's shopping cart.
+     */
+	public void displayClientCart() {
+		boolean entryFound = false;
+        Iterator allClients = warehouse.getClients();
+        Client nextClient;
+        while(!entryFound & allClients.hasNext()){
+            nextClient = (Client)allClients.next();
+            if(nextClient.getId().contentEquals(context.instance().getUser())) {
+                entryFound = true;
+				Iterator allCartItems = warehouse.getCartItems(nextClient.getId());
+				while (allCartItems.hasNext()){
+					ShoppingCartItem nextCartItem = (ShoppingCartItem)(allCartItems.next());
+					System.out.println("Product Name: " + nextCartItem.getItem().getName() + " Product Quantity: " + nextCartItem.getQuantity());
+					System.out.println();
+				}
+            }
+        }
+	
+		if(!entryFound) {
+			System.out.println("\nClient not found, try again");
+		}
+	}
+	
+	/*
      * Function:	displayClientWaitlist
      * Type:		void
      * Privacy:		public
@@ -391,13 +420,14 @@ public class ClientMenuState extends WarehouseState {
      * Description:	Displays the menu from the user.
      */
 	public void help() {
-		System.out.println("Enter a number between 0 and 8 as explained below:");
+		System.out.println("Enter a number between 0 and 9 as explained below:");
 		System.out.println(EXIT + ".) Exit");
 		System.out.println(CLIENT_DETAILS + ".) Show client details");
 		System.out.println(LIST_PRODUCTS_WITH_SALE_PRICES + ".) Show list of products with sale prices");
 		System.out.println(LIST_CLIENT_TRANSACTIONS + ".) Show client transactions");
 		System.out.println(EDIT_CLIENT_CART + ".) Edit client's shopping cart");
 		System.out.println(ADD_TO_CLIENT_CART + ".) Add to client's shopping cart");
+		System.out.println(DISPLAY_CLIENT_CART + ".) Display client's shopping cart");
 		System.out.println(DISPLAY_CLIENT_WAITLIST + ".) Display client's waitlist");
 		System.out.println(PROCESS_CLIENT_ORDER + ".) Process client's order");
 		System.out.println(HELP + ".) Help");
@@ -443,6 +473,8 @@ public class ClientMenuState extends WarehouseState {
 				case EDIT_CLIENT_CART:      			editClientCart();
 														break;
 				case ADD_TO_CLIENT_CART:      			addToClientCart();
+														break;
+				case DISPLAY_CLIENT_CART:          		displayClientCart();
 														break;
 				case DISPLAY_CLIENT_WAITLIST:          	displayClientWaitlist();
 														break;

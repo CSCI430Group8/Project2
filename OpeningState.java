@@ -122,7 +122,7 @@ public class OpeningState extends WarehouseState{
      */
 	private void client(){
 		boolean clientFound = false;
-		String clientId = getToken("Please input the client id: ");
+		String clientId = getToken("Please input the Client ID: ");
 		Iterator allClients = Warehouse.instance().getClients();
         Client nextClient;
         while(!clientFound & allClients.hasNext()){

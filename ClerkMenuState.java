@@ -16,12 +16,29 @@ public class ClerkMenuState extends WarehouseState {
 	private static final int RECEIVE_SHIPMENT = 7;
 	private static final int RECORD_CLIENT_PAYMENT = 8;
 	private static final int HELP = 9;
+	
+	/*
+     * Function:	ClerkMenuState
+     * Type:		constructor(generic)
+     * Privacy:		private
+     * Description:	Constructor for ClerkMenuState class. This is made private because
+     * 				it is using the singleton methodology to make sure only one
+     * 				ClerkMenuState can be initialized at a time
+     */
 	private ClerkMenuState() {
 		super();
 		warehouse = Warehouse.instance();
-		//context = Context.instance();
 	}
   
+	/*
+     * Function:	instance
+     * Type:		ClerkMenuState
+     * Privacy:		public
+     * Description:	This is the singleton for ClerkMenuState, which, if were to
+     * 				try an initialize a second ClientMenuState class it would
+     * 				restrict access to the constructor and only return a copy
+     *  			of the current ClerkMenuState class.
+     */
 	public static ClerkMenuState instance() {
 		if (instance == null) {
 		instance = new ClerkMenuState();
@@ -29,6 +46,12 @@ public class ClerkMenuState extends WarehouseState {
 		return instance;
 	}
 
+	/*
+     * Function:	getToken
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets a string from the user input.
+     */
 	public String getToken(String prompt) {
 		do {
 			try {
@@ -44,6 +67,12 @@ public class ClerkMenuState extends WarehouseState {
 		} while (true);
 	}
 	
+	/*
+     * Function:	yesOrNo
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets input on a yes or no question.
+     */
 	private boolean yesOrNo(String prompt) {
 		String more = getToken(prompt + " (Y|y)[es] or anything else for no");
 		if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
@@ -52,6 +81,12 @@ public class ClerkMenuState extends WarehouseState {
 		return true;
 	}
 	
+	/*
+     * Function:	getNumber
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets an integer from input.
+     */
 	public int getNumber(String prompt) {
 		do {
 			try {
@@ -64,6 +99,12 @@ public class ClerkMenuState extends WarehouseState {
 		} while (true);
 	}
 	
+	/*
+     * Function:	getDate
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets the current date.
+     */
 	public Calendar getDate(String prompt) {
 		do {
 			try {
@@ -77,13 +118,18 @@ public class ClerkMenuState extends WarehouseState {
 			}
 		} while (true);
 	}
-
-	public double getAmount(String prompt) {
+	
+	/*
+     * Function:	getPrice
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets a double from input.
+     */
+	public double getPrice(String prompt) {
 		do {
 			try {
 				String item = getToken(prompt);
 				Double num = Double.valueOf(item);
-				System.out.println(num);
 				return num;
 			} catch (NumberFormatException nfe) {
 				System.out.println("Please enter the deposit");
@@ -91,10 +137,16 @@ public class ClerkMenuState extends WarehouseState {
 		} while (true);
 	}
 	
+	/*
+     * Function:	getCommand
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets a command for the menu from input.
+     */
 	public int getCommand() {
 		do {
 			try {
-				int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
+				int value = Integer.parseInt(getToken("Enter command: Enter " + HELP + " for help"));
 				if (value >= EXIT && value <= HELP) {
 					return value;
 				}
@@ -104,10 +156,17 @@ public class ClerkMenuState extends WarehouseState {
 		} while (true);
 	}
 	
+	/*
+     * Function:	addClient
+     * Type:		void
+     * Privacy:		public
+     * Description:	Prompts the user to enter a client name, phone number, and address.
+					Creates client from the inputs.
+     */
 	public void addClient() {
- 		String name = getToken("Enter member name");
-  		String address = getToken("Enter address");
-  		String phone = getToken("Enter phone");
+ 		String name = getToken("\nClient Name: ");
+  		String phone = getToken("\nPhone Number:");
+		String address = getToken("\nAddress: ");
 		Client dummyClient;
 
 		dummyClient = warehouse.addClient(name, phone, address);
@@ -116,10 +175,27 @@ public class ClerkMenuState extends WarehouseState {
 		}
 	}
 	
+	/*
+     * Function:	listProductsWithQuantitesAndPrices
+     * Type:		void
+     * Privacy:		public
+     * Description:	Lists all of the products with quantities and prices.
+     */
 	public void listProductsWithQuantitesAndPrices() {
-		System.out.println("need to add");
+		Iterator allProducts = warehouse.getProducts();
+		while (allProducts.hasNext()){
+			Product nextProduct = (Product)(allProducts.next());
+            System.out.println("Product ID: " + nextProduct.getId() + " Product Name: " + nextProduct.getName() + " Price Per Item: $" + nextProduct.getPrice() + " Quantity: " + nextProduct.getQuantity());
+            System.out.println();
+		}
 	}
 	
+	/*
+     * Function:	listClients
+     * Type:		void
+     * Privacy:		public
+     * Description:	Lists all of the clients in the system.
+     */
 	public void listClients() {
 		Iterator allClients = warehouse.getClients();
 		while (allClients.hasNext()){
@@ -129,6 +205,12 @@ public class ClerkMenuState extends WarehouseState {
         }
 	}
 	
+	/*
+     * Function:	listClientsWithOutstandingBalance
+     * Type:		void
+     * Privacy:		public
+     * Description:	List all clients with a balance that is less than zero.
+     */
 	public void listClientsWithOutstandingBalance() {
 		Iterator allClients = warehouse.getClients();
 		while (allClients.hasNext()){//search for item by id
@@ -140,9 +222,13 @@ public class ClerkMenuState extends WarehouseState {
         	
         }
 	}
-	
 
-
+	/*
+     * Function:	displayWaitlistForProduct
+     * Type:		void
+     * Privacy:		public
+     * Description:	Displays all of the backorders for a product.
+     */
 	public void displayWaitlistForProduct() {
 		Iterator allBackorders = warehouse.getBackorders();
         while (allBackorders.hasNext()) {
@@ -151,9 +237,17 @@ public class ClerkMenuState extends WarehouseState {
 		}
 	}
 	
+	/*
+     * Function:	receiveShipment
+     * Type:		void
+     * Privacy:		public
+     * Description:	Receives shipment for a product on inventory.
+					May choose to fill a backorder with the shipment.
+     */
 	public void receiveShipment() {
 		System.out.println("Method in progress.");
-        Boolean verification = true;
+        Boolean verification = true,
+				input = false;
         int productQuantity;
         Iterator currentStock = warehouse.getProducts(),
         		currentBackorder = warehouse.getBackorders(),
@@ -164,11 +258,9 @@ public class ClerkMenuState extends WarehouseState {
         
         /*Catalog all items from shipment, add to stock*/
         while(verification) {//while there are still products in shipment
-			String productId = getToken("Input product ID: ");
-			productQuantity = getNumber("Input product quantity: ");
+			String productId = getToken("\nInput product ID: ");
+			productQuantity = getNumber("\nInput product quantity: ");
 
-        	
-        	
         	/*Add shipment's inventory to stock*/
         	while(currentStock.hasNext()) {
         		nextProduct = (Product)currentStock.next();
@@ -177,20 +269,20 @@ public class ClerkMenuState extends WarehouseState {
         		}//end if
         	}//end while
         	
-        	if(getToken("Would you like to add another product from the shipment? (y/n)") != "y") {
+			input = yesOrNo("\nWould you like to add another product from the shipment?");
+        	if(!input) {
                 verification = false;
             }//end if
-        	
         }//end while
         
         /*Try to fill backorders from newly updated stock*/
         while(currentBackorder.hasNext()) {
         	nextBackorder = (Order)currentBackorder.next();//get next backorder
         	nextOrder = nextBackorder.getProducts();
-        	System.out.println("Should this backorder be filled? (y/n)");
+        	System.out.println("\nShould this backorder be filled? (y/n)");
         	System.out.println(nextBackorder);
         	/*If current backorder is to be filled*/
-        	if(getToken("Should this backorder be filled? (y/n)") == "y") {//current backorder should be filled
+        	if(getToken("\nShould this backorder be filled? (y/n)") == "y") {//current backorder should be filled
         		while(nextOrder.hasNext()) {//iterate through current backorder
         			nextBackorderProduct = (ShoppingCartItem)nextOrder.next();
         			String backorderId = nextBackorderProduct.getItem().getId();
@@ -205,7 +297,6 @@ public class ClerkMenuState extends WarehouseState {
         				warehouse.addProductBackorderQuantity(backorderId, -backorderQuantity);
         				nextOrder.remove();
         			}//end if
-        			
         		}//end while
         	}//end if
         	
@@ -214,26 +305,28 @@ public class ClerkMenuState extends WarehouseState {
         	if(!nextOrder.hasNext()){//remove backorders with no product contents
         	 currentBackorder.remove();
         	}//end if
-        	
         }
 	}
 	
+	/*
+     * Function:	recordClientPayment
+     * Type:		void
+     * Privacy:		public
+     * Description:	Records a payment given by a client.
+     */
 	public void recordClientPayment() {
     	String id = getToken("\nInput Client ID: ");
     	boolean entryFound = false,
 				result = false,
-    			inputVerification = false;
-		String input;
+    			inputVerification = false,
+				input = false;
 		double inputCredit = 0.0;
 		double clientBalance = 0.0;
 
 		while (!inputVerification) {
-			inputCredit = Math.round(getAmount("\nInput Amount to Deposit: ") * 100.0) / 100.0;
-            input = getToken("\nDid you want to deposit $" + inputCredit + " into account with client ID: " + id + " (Y/N)");
-            
-
-            
-			if (input == ("y") || input == ("Y"))// we have broken the verification cycle
+			inputCredit = Math.round(getPrice("\nInput Amount to Deposit: ") * 100.0) / 100.0;
+			input = yesOrNo("\nDid you want to deposit $" + inputCredit + " into account with client ID: " + id + "?");
+			if (input)// we have broken the verification cycle
                 inputVerification = true;
 
         }//end while
@@ -249,7 +342,6 @@ public class ClerkMenuState extends WarehouseState {
             }
         }
 
-
         if(entryFound){
             if(warehouse.setClientBalance(id, clientBalance + inputCredit))
                 System.out.println("Balance has been added to account ID: " + id);
@@ -259,24 +351,36 @@ public class ClerkMenuState extends WarehouseState {
 
 	}
 
+	/*
+     * Function:	help
+     * Type:		void
+     * Privacy:		public
+     * Description:	Displays the menu from the user.
+     */
 	public void help() {
 		System.out.println("Enter a number between 0 and 9 as explained below:");
-		System.out.println(EXIT + " to Exit");
-		System.out.println(ADD_CLIENT + " to add a client");
-		System.out.println(LIST_PRODUCTS_WITH_QUANTITIES_AND_PRICES + " to show list of products with quantities and sale prices");
-		System.out.println(LIST_CLIENTS + " to show list of clients");
-		System.out.println(LIST_CLIENTS_WITH_OUTSTANDING_BALANCE + " to show list of clients with outstanding balance");
-		System.out.println(CLIENTMENU + " to switch to the client menu");
-		System.out.println(DISPLAY_WAITLIST_FOR_PRODUCT + " to display the waitlist for a product");
-		System.out.println(RECEIVE_SHIPMENT + " to receive a shipment");
-		System.out.println(RECORD_CLIENT_PAYMENT + " to record a payment from a cleint");
-		System.out.println(HELP + " for help");
+		System.out.println(EXIT + ".) Exit");
+		System.out.println(ADD_CLIENT + ".) Add a client");
+		System.out.println(LIST_PRODUCTS_WITH_QUANTITIES_AND_PRICES + ".) Show list of products with quantities and sale prices");
+		System.out.println(LIST_CLIENTS + ".) Show list of clients");
+		System.out.println(LIST_CLIENTS_WITH_OUTSTANDING_BALANCE + ".) Show list of clients with outstanding balance");
+		System.out.println(CLIENTMENU + ".) Become a client");
+		System.out.println(DISPLAY_WAITLIST_FOR_PRODUCT + ".) Display the waitlist for a product");
+		System.out.println(RECEIVE_SHIPMENT + ".) Receive a shipment");
+		System.out.println(RECORD_CLIENT_PAYMENT + ".) Record a payment from a client");
+		System.out.println(HELP + ".) Help");
 	}
 
+	/*
+     * Function:	clientmenu
+     * Type:		void
+     * Privacy:		public
+     * Description:	Switches the user to the client menu.
+     */
 	public void clientmenu()
 	{
 		boolean clientFound = false;
-		String clientId = getToken("Please input the user id: ");
+		String clientId = getToken("Input Client ID: ");
 		Iterator allClients = Warehouse.instance().getClients();
         Client nextClient;
         while(!clientFound & allClients.hasNext()){
@@ -291,6 +395,12 @@ public class ClerkMenuState extends WarehouseState {
 			System.out.println("Invalid client id.");
 	}
 
+	/*
+     * Function:	logout
+     * Type:		void
+     * Privacy:		public
+     * Description:	Logs out the user.
+     */
 	public void logout()
 	{
 		if ((Context.instance()).getLogin() == Context.IsManager)
@@ -305,7 +415,12 @@ public class ClerkMenuState extends WarehouseState {
 		(Context.instance()).changeState(1); // exit code 1, indicates error
 	}
  
-
+	/*
+     * Function:	process
+     * Type:		void
+     * Privacy:		public
+     * Description:	processes through the menu options.
+     */
 	public void process() {
 		int command;
 		help();
@@ -334,6 +449,12 @@ public class ClerkMenuState extends WarehouseState {
 		logout();
 	}
 	
+	/*
+     * Function:	run
+     * Type:		void
+     * Privacy:		public
+     * Description:	Runs the process of the menu.
+     */
 	public void run() {
 		process();
 	}

@@ -15,7 +15,13 @@ public class Context {
 	public static final int IsClient = 2;
 	private WarehouseState[] states;
 	private int[][] nextState;
-
+	
+	/*
+     * Function:	getToken
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets a string from the user input.
+     */
 	public String getToken(String prompt) {
 		do {
 			try {
@@ -31,6 +37,12 @@ public class Context {
 		} while (true);
 	}
   
+	/*
+     * Function:	yesOrNo
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets input on a yes or no question.
+     */
 	private boolean yesOrNo(String prompt) {
 		String more = getToken(prompt + " (Y|y)[es] or anything else for no");
 		if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
@@ -38,7 +50,14 @@ public class Context {
 		}
 		return true;
 	}
-
+	
+	/*
+     * Function:	retrieve
+     * Type:		void
+     * Privacy:		public
+     * Description:	Retrieves data from file called WarehouseData and
+					sets all of the data into the warehouse database.
+     */
 	private void retrieve() {
 		try {
 			Warehouse tempWarehouse = Warehouse.retrieve();
@@ -53,21 +72,52 @@ public class Context {
 			cnfe.printStackTrace();
 		}
 	}
-
+	
+	/*
+     * Function:	setLogin
+     * Type:		void
+     * Privacy:		public
+     * Description:	Sets the login type.
+     */
 	public void setLogin(int code)
 	{currentUser = code;}
 
+	/*
+     * Function:	setUser
+     * Type:		void
+     * Privacy:		public
+     * Description:	Sets the ID for a client.
+     */
 	public void setUser(String uID)
 	{ userID = uID;}
 
+	/*
+     * Function:	getLogin
+     * Type:		int
+     * Privacy:		public
+     * Description:	Gets the login type.
+     */
 	public int getLogin()
 	{ return currentUser;}
 
+	/*
+     * Function:	getUser
+     * Type:		String
+     * Privacy:		public
+     * Description:	Gets the ID of the client.
+     */
 	public String getUser()
 	{ return userID;}
-
-	private Context() { //constructor
-		System.out.println("In context constructor");
+	
+	/*
+     * Function:	Context
+     * Type:		constructor(generic)
+     * Privacy:		private
+     * Description:	Constructor for Context class. This is made private because
+     * 				it is using the singleton methodology to make sure only one
+     * 				Context can be initialized at a time
+     */
+	private Context() {
 		if (yesOrNo("Look for saved data and use it?")) {
 			retrieve();
 		} else {
@@ -87,9 +137,14 @@ public class Context {
 		currentState = 3;
 	}
 
+	/*
+     * Function:	changeState
+     * Type:		void
+     * Privacy:		public
+     * Description:	Changes the state in the FSM.
+     */
 	public void changeState(int transition)
 	{
-		System.out.println("current state " + currentState + " \n \n ");
 		currentState = nextState[currentState][transition];
 		if (currentState == -2) {
 			System.out.println("Error has occurred"); 
@@ -98,10 +153,16 @@ public class Context {
 		if (currentState == -1) {
 			terminate();
 		}
-		System.out.println("current state " + currentState + " \n \n ");
 		states[currentState].run();
 	}
 
+	/*
+     * Function:	terminate
+     * Type:		void
+     * Privacy:		public
+     * Description:	Outputs data into a file called WarehouseData and
+					saves it for future use, then exits the system.
+     */
 	private void terminate()
 	{
 		if (yesOrNo("Save data?")) {
@@ -111,17 +172,31 @@ public class Context {
 				System.out.println(" There has been an error in saving \n" );
 			}
 		}
-		System.out.println(" Goodbye \n "); System.exit(0);
+		System.out.println(" System finished. \n "); System.exit(0);
 	}
 
+	/*
+     * Function:	instance
+     * Type:		Context
+     * Privacy:		public
+     * Description:	This is the singleton for Context, which, if were to
+     * 				try an initialize a second Context class it would
+     * 				restrict access to the constructor and only return a copy
+     *  			of the current Context class.
+     */
 	public static Context instance() {
 		if (context == null) {
-			System.out.println("calling constructor");
 			context = new Context();
 		}
 		return context;
 	}
-
+	
+	/*
+     * Function:	process
+     * Type:		void
+     * Privacy:		public
+     * Description:	processes through the system.
+     */
 	public void process(){
 		states[currentState].run();
 	}

@@ -122,6 +122,18 @@ public class Warehouse implements Serializable {
 	}//end getProducts
 	
 	/*
+     * Function:	getPurchasePrices
+     * Type:		Iterator
+     * Privacy:		public
+     * Description:	This returns an iterator for the Product Purchase Prices that allows
+					for traversal through the different items within the
+					purchase prices of the product.
+     */
+	public Iterator getPurchasePrices(String id) {
+		return inventory.getPurchasePrices(id);
+	}//end ggetPurchasePrices
+	
+	/*
      * Function:	addBackorder
      * Type:		void
      * Privacy:		public
@@ -178,8 +190,8 @@ public class Warehouse implements Serializable {
      * Description:	This adds a Product to the ProductList, and then it returns 
 					if the Product that was added.
      */
-	public Product addProduct(String name, String supplier, double price, int quantity) {
-		Product product = new Product(name, supplier, price, quantity);
+	public Product addProduct(String name, double price, int quantity) {
+		Product product = new Product(name, price, quantity);
 		if (inventory.insertProduct(product)) {
 			return (product);
 		}
@@ -296,6 +308,27 @@ public class Warehouse implements Serializable {
         }
 		return result;
 	}//end setCartItemQuant
+	
+	/*
+	 * Function:	setPurchasePrice
+	 * Type:		boolean
+	 * Privacy:		public
+	 * Description:
+	 */
+	public boolean setPurchasePrice(String productId, String supplierId, double purchasePrice){
+		boolean result = false,
+				entryFound = false;
+		Iterator allProducts = warehouse.getProducts();
+        Product nextProduct;
+        while(!entryFound & allProducts.hasNext()){
+            nextProduct = (Product)allProducts.next();
+            if(nextProduct.getId().contentEquals(productId)) {
+                entryFound = true;
+				result = nextProduct.setPurchasePrice(supplierId, purchasePrice);
+            }
+        }
+		return result;
+	}//end setPurchasePrice
 
 	/*
 	 * Function:	getProductName
@@ -398,6 +431,17 @@ public class Warehouse implements Serializable {
 		/* Copy product to add in cart */
 		return client.insertToCart(product, quantity);
 	}//end addToClientCart
+	
+	/*
+     * Function:	addPurchasePrice
+     * Type:		boolean
+     * Privacy:		public
+     * Description:	This finds the Product using their ID and then 
+					inserts a Supplier and purchase price.
+	 */
+	public boolean addPurchasePrice(Product product, Supplier supplier, double purchasePrice) {
+		return product.insertPurchasePrice(supplier, purchasePrice);
+	}//end addPurchasePrice
 
 	/*
      * Function:	addToOrder
@@ -483,6 +527,27 @@ public class Warehouse implements Serializable {
             if(nextClient.getId().contentEquals(clientId)) {
                 entryFound = true;
 				result = nextClient.removeCartItem(productId);
+            }
+        }
+		return result;
+	}//end removeCartItem
+	
+	/*
+	 * Function:	removePurchasePrice
+	 * Type:		boolean
+	 * Privacy:		public
+	 * Description:
+	 */
+	public boolean removePurchasePrice(String productId, String supplierId){
+		boolean result = false,
+				entryFound = false;
+		Iterator allProducts = warehouse.getProducts();
+        Product nextProduct;
+        while(!entryFound & allProducts.hasNext()){
+            nextProduct = (Product)allProducts.next();
+            if(nextProduct.getId().contentEquals(productId)) {
+                entryFound = true;
+				result = nextProduct.removePurchasePrice(supplierId);
             }
         }
 		return result;

@@ -9,12 +9,29 @@ public class OpeningState extends WarehouseState{
 	private static final int EXIT = 3;
 	private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	private Context context;
+	
+	/*
+     * Function:	OpeningState
+     * Type:		constructor(generic)
+     * Privacy:		private
+     * Description:	Constructor for OpeningState class. This is made private because
+     * 				it is using the singleton methodology to make sure only one
+     * 				OpeningState can be initialized at a time
+     */
 	private static OpeningState instance;
 	private OpeningState() {
 		super();
-		// context = Context.instance();
 	}
 	
+	/*
+     * Function:	instance
+     * Type:		OpeningState
+     * Privacy:		public
+     * Description:	This is the singleton for OpeningState, which, if were to
+     * 				try an initialize a second ClientMenuState class it would
+     * 				restrict access to the constructor and only return a copy
+     *  			of the current OpeninguState class.
+     */
 	public static OpeningState instance() {
 		if (instance == null) {
 			instance = new OpeningState();
@@ -22,6 +39,12 @@ public class OpeningState extends WarehouseState{
 		return instance;
 	}
 	
+	/*
+     * Function:	getCommand
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets a command for the menu from input.
+     */
 	public int getCommand() {
 		do {
 			try {
@@ -34,7 +57,13 @@ public class OpeningState extends WarehouseState{
 			}
 		} while (true);
 	}
-
+	
+	/*
+     * Function:	getToken
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets a string from the user input.
+     */
 	public String getToken(String prompt) {
 		do {
 			try {
@@ -50,6 +79,12 @@ public class OpeningState extends WarehouseState{
 		} while (true);
 	}
  
+	/*
+     * Function:	yesOrNo
+     * Type:		void
+     * Privacy:		public
+     * Description:	Gets input on a yes or no question.
+     */
 	private boolean yesOrNo(String prompt) {
 		String more = getToken(prompt + " (Y|y)[es] or anything else for no");
 		if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
@@ -58,19 +93,37 @@ public class OpeningState extends WarehouseState{
 		return true;
 	}
 	
+	/*
+     * Function:	manager
+     * Type:		void
+     * Privacy:		public
+     * Description:	Changes the state to the ManagerMenuState.
+     */
 	private void manager(){
 		(Context.instance()).setLogin(Context.IsManager);
 		(Context.instance()).changeState(0);
 	}
 	
+	/*
+     * Function:	clerk
+     * Type:		void
+     * Privacy:		public
+     * Description:	Changes the state to the ClerkMenuState.
+     */
 	private void clerk(){
 		(Context.instance()).setLogin(Context.IsClerk);
 		(Context.instance()).changeState(1);
 	}
 
+	/*
+     * Function:	client
+     * Type:		void
+     * Privacy:		public
+     * Description:	Changes the state to the ClientMenuState.
+     */
 	private void client(){
 		boolean clientFound = false;
-		String clientId = getToken("Please input the client id: ");
+		String clientId = getToken("Please input the Client ID: ");
 		Iterator allClients = Warehouse.instance().getClients();
         Client nextClient;
         while(!clientFound & allClients.hasNext()){
@@ -85,13 +138,20 @@ public class OpeningState extends WarehouseState{
 		if(!clientFound) 
 			System.out.println("Invalid client id.");
 	} 
-
+	
+	/*
+     * Function:	process
+     * Type:		void
+     * Privacy:		public
+     * Description:	processes through the menu options.
+     */
 	public void process() {
 		int command;
-		System.out.println("Input 0 to login as Manager\n"+ 
-							"Input 1 to login as Clerk\n" +
-							"Input 2 to login as Client\n" +
-							"Input 3 to exit the system\n");   
+		System.out.println("Enter a number between 0 and 3 as explained below:");
+		System.out.println("0.) Login as Manager\n"+ 
+							"1.) Login as Clerk\n" +
+							"2.) Login as Client\n" +
+							"3.) Exit the system\n");   
 		while ((command = getCommand()) != EXIT) {
 
 			switch (command) {
@@ -104,14 +164,20 @@ public class OpeningState extends WarehouseState{
 				default:                System.out.println("Invalid choice");
                                 
 			}	
-			System.out.println("Input 0 to login as Manager\n"+ 
-							"Input 1 to login as Clerk\n" +
-							"Input 2 to login as Client\n" +
-							"Input 3 to exit the system\n");  
+			System.out.println("0.) Login as Manager\n"+ 
+								"1.) Login as Clerk\n" +
+								"2.) Login as Client\n" +
+								"3.) Exit the system\n");  
 		}
 		(Context.instance()).changeState(3);
 	}
-
+	
+	/*
+     * Function:	run
+     * Type:		void
+     * Privacy:		public
+     * Description:	Runs the process of the menu.
+     */
 	public void run() {
 		process();
 	}
